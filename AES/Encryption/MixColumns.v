@@ -5,7 +5,7 @@ module MixColumns(res,inp);
     genvar i;
     generate
     for (i = 0;i < 4;i = i + 1)
-    begin : MIX_COL_LOOP
+    begin
         wire [7:0] s0 = inp[127-32*i : 120-32*i];
         wire [7:0] s1 = inp[119-32*i : 112-32*i];
         wire [7:0] s2 = inp[111-32*i : 104-32*i];
