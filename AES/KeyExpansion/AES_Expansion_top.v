@@ -1,4 +1,4 @@
-module AES_nsion(
+module AES_sion(
     input reset, clk, start,
     input [127:0] short_subkey,
     output reg [127:0] subkey,
