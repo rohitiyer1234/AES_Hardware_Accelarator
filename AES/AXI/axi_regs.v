@@ -77,7 +77,8 @@ module axi_regs(
 
     input [31:0] status_reg,
     input [31:0] data_out_mem [0:3],
-    output reg [31:0] ctrl_reg,
+    output reg [31:0] ctrl_reg1,
+    output reg [31:0] ctrl_reg2,
     output reg [31:0] mode_reg,
     output reg [31:0] base_key_reg [0:3],
     output reg [31:0] IV_W [0:3],
@@ -99,9 +100,10 @@ always @ (posedge clk) begin
 
     end else if (wr_en) begin
         case (wr_addr[7:0])
-            8'h00: ctrl_reg <= wr_data;
-            //8'h04 cant write to status reg, asserted by hardware
-            8'h08: mode_reg <= wr_data;
+            8'h00: ctrl_reg1 <= wr_data;
+            8'h04: ctrl_reg2 <= wr_data;
+            //8'h08 cant write to status reg, asserted by hardware
+            8'h0C: mode_reg <= wr_data;
 
             8'h10: base_key_reg[0] <= wr_data;
             8'h14: base_key_reg[1] <= wr_data;
@@ -127,9 +129,9 @@ always @ (*) begin
     rd_data = 32'h0;
     if (rd_en)begin
     case (rd_addr[7:0] )
-        8'h00: rd_data = ctrl_reg;
-        8'h04: rd_data = status_reg;
-        8'h08: rd_data = mode_reg;
+        8'h00: rd_data = ctrl_reg1;
+        8'h08: rd_data = status_reg;
+        8'h0C: rd_data = mode_reg;
 
         8'h2C: rd_data = data_out_mem[0];
         8'h30: rd_data = data_out_mem[1];

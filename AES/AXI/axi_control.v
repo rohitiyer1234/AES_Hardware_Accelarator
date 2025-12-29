@@ -17,7 +17,8 @@ module axi_control (
     output reg         aes_start,
     output reg  [127:0] plaintext_lat,
     output reg  [2:0]  mode_lat,
-    output reg [127:0] iv_lat
+    output reg [127:0] iv_lat,
+    output reg enc_dec_lat
 
 );
 
@@ -51,6 +52,7 @@ module axi_control (
                             data_in_mem[3]
                         };
 
+                        enc_dec_lat <= ctrl_reg[1];
                         mode_lat <= mode_reg[2:0];
                         iv_lat <= {
                             iv_in[0],

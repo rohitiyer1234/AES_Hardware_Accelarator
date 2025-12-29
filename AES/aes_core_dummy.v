@@ -2,7 +2,7 @@ module aes_core_dummy (
     input  wire        clk,
     input  wire        reset,
     input  wire        start,
-    input  wire        enc_dec,   // 0=enc, 1=dec
+    input  wire        enc_dec,      // 0 = encrypt, 1 = decrypt
     input  wire [127:0] data_in,
     output reg  [127:0] data_out,
     output reg         done
@@ -18,14 +18,14 @@ module aes_core_dummy (
             done <= 0;
 
             if (start) begin
-                cnt <= 4'd5;
+                cnt <= 4'd4; // fixed latency
             end else if (cnt != 0) begin
                 cnt <= cnt - 1;
                 if (cnt == 1) begin
                     if (!enc_dec)
-                        data_out <= data_in ^ 128'hA5A5_A5A5_A5A5_A5A5_A5A5_A5A5_A5A5_A5A5;
+                        data_out <= data_in ^ 128'h1111_1111_1111_1111_1111_1111_1111_1111;
                     else
-                        data_out <= data_in ^ 128'h5A5A_5A5A_5A5A_5A5A_5A5A_5A5A_5A5A_5A5A;
+                        data_out <= data_in ^ 128'h2222_2222_2222_2222_2222_2222_2222_2222;
                     done <= 1'b1;
                 end
             end
