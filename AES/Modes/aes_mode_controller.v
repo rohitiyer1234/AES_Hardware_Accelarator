@@ -9,6 +9,7 @@ module aes_mode_controller (
     input  wire [127:0] plaintext,
     input  wire [127:0] aes_out,
     input  wire [127:0] iv,
+    input  wire enc_dec_lat,
 
     output reg         fb_load_iv,
     output reg         fb_update,
