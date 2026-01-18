@@ -10,11 +10,23 @@ module SubBytes (
 
     genvar i;
     // Unrolled byte-wise substitution through the sbox function
+    wire [7:0] b [15:0];
+    genvar k;
+
+    // Explicit byte extraction
+    assign {
+        b[0],  b[1],  b[2],  b[3],
+        b[4],  b[5],  b[6],  b[7],
+        b[8],  b[9],  b[10], b[11],
+        b[12], b[13], b[14], b[15]
+    } = inp;
+// Byte-wise S-box
     generate
-        for (i = 0; i < 128; i = i + 8) begin : BYTE_LOOP
-            assign res[i+7:i] = sbox(inp[i+7:i]);
-        end
+    for (k = 0; k < 16; k = k + 1) begin : SB_BYTES
+        assign res[127 - 8*k -: 8] = sbox(b[k]);
+    end
     endgenerate
+
 
 
     //==============================================================
