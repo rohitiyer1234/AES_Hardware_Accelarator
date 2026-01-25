@@ -75,6 +75,9 @@ The design follows **industry-standard IP development practices**, emphasizing:
 +---------------------------------------------+
 
 ```
+![AES Core](./Results/aes_block_diagram.jpg)
+
+
 
 The system is divided into **clearly defined layers**, each with a single responsibility.
 
