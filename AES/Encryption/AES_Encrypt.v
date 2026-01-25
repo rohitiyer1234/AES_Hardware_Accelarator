@@ -1,37 +1,48 @@
 module AES_Encrypt (
-    input  clk, reset, start, subkey_valid,
+    input  clk,
+    input  reset,
+    input  start,
+    input  subkey_valid,
     input  [127:0] plaintext,
     input  [127:0] subkey,
 
-    output reg [3:0] subkey_addr,
+    output reg [3:0]   subkey_addr,
     output reg [127:0] ciphertext,
-    output reg  ciphertext_done
+    output reg         ciphertext_done
 );
 
-    // FSM states
-    localparam IDLE = 2'd0;
+    localparam IDLE  = 2'd0;
     localparam ROUND = 2'd1;
-    localparam WAIT = 2'd2;
-    localparam DONE = 2'd3;
+    localparam WAIT  = 2'd2;
+    localparam DONE  = 2'd3;
 
     reg [1:0]   status;
     reg [3:0]   round_count;
     reg [127:0] state_reg;
+    reg start_seen;
 
-    wire [127:0] subbytes_out, shiftrows_out, mixcols_out;
-    wire [127:0] addkey_out;
+    // -------------------------------
+    // Combinational datapath wires
+    // -------------------------------
+    wire [127:0] subbytes_out;
+    wire [127:0] shiftrows_out;
+    wire [127:0] mixcols_out;
+    wire [127:0] state_next;
 
-    // AES datapath
-    SubBytes   SB (subbytes_out, state_reg);
-    ShiftRows  SR (shiftrows_out, subbytes_out);
-    MixColumns MC (mixcols_out, shiftrows_out);
+    // AES datapath (PURE combinational)
+    SubBytes   u_sb (.inp(state_reg),    .res(subbytes_out));
+    ShiftRows  u_sr (.inp(subbytes_out), .out(shiftrows_out));
+    MixColumns u_mc (.inp(shiftrows_out),.res(mixcols_out));
 
-    // Select input to AddRoundKey
-    wire [127:0] addkey_in =
-        (round_count == 1) ? shiftrows_out : mixcols_out;
+    // AddRoundKey + final-round select
+    assign state_next =
+        (round_count == 1) ?
+            (shiftrows_out ^ subkey) :  // final round
+            (mixcols_out  ^ subkey);    // normal rounds
 
-    AddRoundKey A1(addkey_out, addkey_in, subkey);
-
+    // -------------------------------
+    // FSM (ONLY place state_reg updates)
+    // -------------------------------
     always @(posedge clk) begin
         if (reset) begin
             status          <= IDLE;
@@ -44,39 +55,41 @@ module AES_Encrypt (
             case (status)
 
             IDLE: begin
-                ciphertext_done <= 0;
-                subkey_addr     <= 0;
+            ciphertext_done <= 0;
+            subkey_addr     <= 0;
 
-                if (start && subkey_valid) begin
-                    // Initial AddRoundKey (Round 0)
-                    state_reg   <= plaintext ^ subkey;
-                    round_count <= 10;
-                    subkey_addr <= 1;
-                    status      <= ROUND;
-                end
+    // Clear latch ONLY when start is deasserted
+            if (!start)
+                 start_seen <= 1'b0;
+
+    // Start exactly once per start assertion
+            if (start && !start_seen && subkey_valid) begin
+                 start_seen  <= 1'b1;
+                state_reg   <= plaintext ^ subkey; // round 0
+                round_count <= 10;
+                subkey_addr <= 1;
+                status      <= ROUND;
+             end
             end
+
 
             ROUND: begin
                 if (subkey_valid) begin
-                    state_reg   <= addkey_out;
+                    state_reg   <= state_next;
                     round_count <= round_count - 1;
                     subkey_addr <= subkey_addr + 1;
 
                     if (round_count == 1)
                         status <= DONE;
-                    else
-                        status <= ROUND;
                 end else begin
                     status <= WAIT;
                 end
             end
 
-
             WAIT: begin
                 if (subkey_valid)
                     status <= ROUND;
             end
-
 
             DONE: begin
                 ciphertext      <= state_reg;
