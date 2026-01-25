@@ -92,7 +92,6 @@ aes_accelerator/
 │   │   ├── axi_slave.v
 │   │   ├── axi_regs.v
 │   │   ├── axi_control.v
-│   │   └── axi_addr_map.v
 │   │
 │   ├── common/
 │   │   ├── aes_mode_controller.v
@@ -100,17 +99,14 @@ aes_accelerator/
 │   │   ├── feedback_reg_128.v
 │   │   ├── ctr_reg_128.v
 │   │   ├── xor_128.v
-│   │   └── mode_defs.v
 │   │
 │   ├── keyexp/
-│   │   ├── key_sched_gen.v
-│   │   ├── keyexp_controller.v
-│   │   ├── roundkey_mem.v
-│   │   └── keyexp_top.v
+│   │   ├── Aes_Key_Expansion.v
+│   │   ├── current_word_gen_128.v
+│   │   ├── key_mem.v
 │   │
 │   ├── encrypt/
 │   │   ├── aes_encrypt.v
-│   │   ├── aes_round.v
 │   │   ├── subbytes.v
 │   │   ├── shiftrows.v
 │   │   ├── mixcolumns.v
@@ -118,10 +114,10 @@ aes_accelerator/
 │   │
 │   ├── decrypt/
 │   │   ├── aes_decrypt.v
-│   │   ├── aes_inv_round.v
 │   │   ├── inv_subbytes.v
 │   │   ├── inv_shiftrows.v
 │   │   └── inv_mixcolumns.v
+│   │   └── addroundkey.v
 │   │
 │   └── top/
 │       ├── aes_top.v
