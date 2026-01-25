@@ -124,16 +124,12 @@ aes_accelerator/
 │       └── aes_axi_top.v
 │
 ├── tb/
-│   ├── tb_axi.v
-│   ├── tb_keyexp.v
-│   ├── tb_encrypt.v
-│   ├── tb_modes.v
-│   └── tb_aes_axi.v
-│
-└── firmware/
-    ├── aes_regs.h
-    ├── aes_driver.h
-    └── aes_driver.c
+    ├── tb_axi.v
+    ├── tb_keyexp.v
+    ├── tb_encrypt.v
+    ├── tb_modes.v
+    └── tb_aes_axi.v
+
 ```
 ---
 
