@@ -75,7 +75,8 @@ The design follows **industry-standard IP development practices**, emphasizing:
 +---------------------------------------------+
 
 ```
-![AES Block Diagram](./Results/aes_block_diagram.jpeg)
+![AES Block Diagram1](./Results/aes_hw_accelerator.jpeg)
+![AES Block Diagram2](./Results/aes_block_diagram.jpeg)
 
 
 
