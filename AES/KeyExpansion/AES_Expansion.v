@@ -12,10 +12,12 @@ module Aes_key_expansion_128(
     output reg [127:0] wkey
 
 );
-    reg local_start;
+    //reg local_start;
     reg [3:0] i;
     reg status;
-    reg [127:0] prev_period_key_1;     //To hold 128 bit previous round key for next round computation
+    reg [127:0] prev_period_key_1; 
+    wire [127:0] output_key;
+    //To hold 128 bit previous round key for next round computation
     wire [31:0] key1,key2,key3,key4;
 
     // didnt understand this part fully , look into it later as well
@@ -29,8 +31,6 @@ module Aes_key_expansion_128(
 
 
     assign output_key ={key1,key2,key3,key4};    // 4 32 bit words to give 128 bit key
-
-
 
     always @(posedge clk)
     begin
